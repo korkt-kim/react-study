@@ -1,23 +1,32 @@
 import {useState} from 'react';
 
-const useInput = (initialValue,validator)=>{
-  const [value,setValue] = useState(initialValue);
-  const onChange = ({target:{value}}) =>{
-    if(typeof validator ==='function' && validator(value)){
-      setValue(value)
-    }else{
-      alert("must be numeric")
-    }
+const useTabs = (initialTab,allTabs)=>{
+  const [currentIndex,setCurrentIndex] = useState(initialTab);
+  if(!allTabs || !Array.isArray(allTabs)){ return; }
+  const changeItem=(index)=>{
+    setCurrentIndex(index);
   }
-  return {value,onChange}
+  return {currentItem: allTabs[currentIndex].content,changeItem}
 }
+
+const contents = [
+  {
+    tab:'section1',
+    content:'asdf'
+  },
+  {
+    tab:`section2`,
+    content:'zxcv'
+  }
+]
 
 function App() {
-  const myValidator = (str) => !isNaN(str)
-  const name = useInput(1,myValidator)
+  const {currentItem,changeItem} = useTabs(0,contents)
   return (
-   <input type ="text" {...name}/>
-  );
+    <div>
+      {contents.map((content,index)=><button key={index} onClick={()=>changeItem(index)} >{content.tab}</button>)}
+      <p>{currentItem}</p>
+   </div>
+  )
 }
-
 export default App;
