@@ -1,24 +1,25 @@
 import React,{useState,useEffect, useRef} from 'react';
 import ReactDOM from 'react-dom'
 
-
-const usePreventLeave = (message="",isEnabled=false) =>{
-  const listener = (e)=>{
-    e.preventDefault();
-    e.returnValue =""  // 이것이 페이지 이동을 막아준다.
-  }
-  const enablePrevent = () => window.addEventListener('beforeunload',listener)
-  const disablePrevent = () => window.removeEventListener('beforeunload',listener)
+const useFadeIn = (duration) =>{
+  const element = useRef();
+  useEffect(()=>{
+    if(element.current){
+      element.current.style.transition = `opacity ease ${duration}s`
+      element.current.style.opacity = 1
+    }
+  },[])
   
-  return {enablePrevent,disablePrevent};
+  return {ref:element,style:{opacity:0}};
 }
 
 function App() {
-  const {enablePrevent:protect,disablePrevent:unprotect} = usePreventLeave();
+  const fadeInH1 = useFadeIn(3);
+  const fadeInP = useFadeIn(10);
   return (
-    <div >
-      <button onClick={protect}>Protect</button>
-      <button onClick={unprotect}>UnProtect</button>
+    <div  >
+      <h1 {...fadeInH1}>asdifjoiasdjgioasjg</h1>
+      <p {...fadeInP}>asdfasdf</p>
     </div>
   )
 }
