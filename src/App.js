@@ -2,29 +2,23 @@ import React,{useState,useEffect, useRef} from 'react';
 import ReactDOM from 'react-dom'
 
 
-const useConfirm = (message="", onConfirm, onReject) =>{
-  if(typeof onConfirm !=='function'){
-    return;
+const usePreventLeave = (message="",isEnabled=false) =>{
+  const listener = (e)=>{
+    e.preventDefault();
+    e.returnValue =""  // 이것이 페이지 이동을 막아준다.
   }
-  const confirmAction = () =>{
-    // eslint-disable-next-line no-restricted-globals
-    if(confirm(message)){
-      onConfirm();
-    }else{
-      onReject();
-    }
-  }
-  return confirmAction;
+  const enablePrevent = () => window.addEventListener('beforeunload',listener)
+  const disablePrevent = () => window.removeEventListener('beforeunload',listener)
+  
+  return {enablePrevent,disablePrevent};
 }
 
 function App() {
-  const deleteWorld = () => console.log('deleting the world')
-  
-  const abort = () => console.log('Aborted');
-  const confirmDelete = useConfirm("Are you sure?",deleteWorld,abort);
+  const {enablePrevent:protect,disablePrevent:unprotect} = usePreventLeave();
   return (
     <div >
-      <button onClick={confirmDelete}>Delete the world</button>
+      <button onClick={protect}>Protect</button>
+      <button onClick={unprotect}>UnProtect</button>
     </div>
   )
 }
