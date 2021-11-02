@@ -1,16 +1,19 @@
 import React,{useState,useEffect, useRef} from 'react';
 import ReactDOM from 'react-dom'
-import useAxios from './useAxios.js'
+import Modal from './Modal.js'
+import useModal from './useModal.js'
+import './App.css';
 
 
 function App() {
-  const {loading,error,data,refetch} = useAxios({method:'get',url:`https://yts.am/api/v2/list_movies.json`});
-  console.log(`Loading: ${loading}, error:${error}, data:${data}`);
+  const {isShowing, toggle} = useModal();
   return (
     <div>
-      {loading && <div>Loading</div>}
-      {error &&  <div>{error}</div>}
-      {data && <div>{JSON.stringify(data)}</div>}
+      <button className="button-default" onClick={toggle}>Show Modal</button>
+      <Modal
+        isShowing={isShowing}
+        hide={toggle}
+      />
     </div>
   )
 }
