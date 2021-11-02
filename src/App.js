@@ -1,25 +1,31 @@
 import React,{useState,useEffect, useRef} from 'react';
 import ReactDOM from 'react-dom'
 
-const useFadeIn = (duration) =>{
-  const element = useRef();
-  useEffect(()=>{
-    if(element.current){
-      element.current.style.transition = `opacity ease ${duration}s`
-      element.current.style.opacity = 1
-    }
-  },[])
-  
-  return {ref:element,style:{opacity:0}};
+const useScroll = () =>{
+  const [state,setState] = useState({
+    x:0,
+    y:0
+  });
+  const onScroll = ({target}) =>{
+    const {scrollTop,scrollLeft} = target;
+    setState({
+      x:scrollTop,
+      y:scrollLeft
+    })
+  }
+  return {state,onScroll}
 }
 
 function App() {
-  const fadeInH1 = useFadeIn(3);
-  const fadeInP = useFadeIn(10);
+  const {state,onScroll} = useScroll();
   return (
-    <div  >
-      <h1 {...fadeInH1}>asdifjoiasdjgioasjg</h1>
-      <p {...fadeInP}>asdfasdf</p>
+    <div>
+      <div  onScroll={onScroll} style={{overflow:"auto",height:"50px",width:'50px',display:'inline-block'}}>
+        <p>asdf22222222222222222222222222222</p>
+        <p>asdf2222222222222222222222222222</p>
+        <p>asdf22222222222222222222222222</p>
+      </div>
+      <div>x:{state.x} y:{state.y}</div>
     </div>
   )
 }
