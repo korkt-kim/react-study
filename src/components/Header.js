@@ -1,7 +1,9 @@
-import React from 'react'
+import React, {useState} from 'react'
 import styled from 'styled-components';
 import MenuIcon from "@material-ui/icons/Menu";
 import CloseIcon from "@material-ui/icons/Close"
+import {selectCars} from "../features/car/carSlice.js"
+import {useSelector} from 'react-redux'
 
 const Container = styled.div`
     min-height:60px;
@@ -61,6 +63,8 @@ const BurgerNav = styled.div`
     display:flex;
     flex-direction:column;
     text-align:start;
+    transform: ${props=>props.show ? "translateX(0)":"translateX(100%)"};
+    transition: transform 0.2s ease-in;
     li{
         padding:15px 0;
         border-bottom: 1px solid rgba(0,0,0,0.2);
@@ -80,27 +84,32 @@ const CustomClose = styled(CloseIcon)`
 //공부: full width 만드는 법 width:100%안될때
 
 export default function Header(){
+    const [burgerState,setBurgerState] = useState(false)
+    const cars = useSelector(selectCars);
+    console.log(cars);
+
     return(
         <Container>
             <a href="/">
                 <img src="/images/logo.svg" alt=""></img>
             </a>
             <Menu>
-                <p><a href="#">Model S</a></p>
-                <p><a href="#">Model 3</a></p>
-                <p><a href="#">Model X</a></p>
-                <p><a href="#">Model Y</a></p>
+                {cars && cars.map((car,index)=>
+                    <p><a key={index} href="#">{car}</a></p>
+                )}
             </Menu>
             <RightMenu>
                 <a href="#">Shop</a>
                 <a href="#">Tesla Account</a>
-                <CustomMenu></CustomMenu>
+                <CustomMenu onClick={()=>setBurgerState(true)}></CustomMenu>
             </RightMenu>
-            <BurgerNav>
+            <BurgerNav show={burgerState}>
                 <CloseWrapper>
-                    <CustomClose></CustomClose>
+                    <CustomClose onClick={()=>setBurgerState(false)}></CustomClose>
                 </CloseWrapper>
-                
+                {cars && cars.map((car,index)=>
+                    <li><a key={index} href="#">{car}</a></li>
+                )}
                 <li><a href="#">Existing Inventory</a></li>
                 <li><a href="#">Used Inventory</a></li>
                 <li><a href="#">Trade-in</a></li>
